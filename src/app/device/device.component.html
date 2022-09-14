@@ -1,0 +1,358 @@
+<div class="container-fluid" style="margin-top: 2%">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/main-admin">APs</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/user">ผู้ใช้งาน</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/settings">ตั้งค่า</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" routerLink="/device">จัดการอุปกรณ์</a>
+    </li>
+  </ul>
+  <div style="margin-top: 1%">
+    <a style="font-size: 20px;">อุปกรณ์</a>
+    <button type="button" data-bs-toggle="modal" data-bs-target="#addDevice" data-bs-whatever="@fat"
+      style="float: right;width: 100px;color: white;background-color: rgb(133, 192, 44);border: none;border-radius: 5px;">เพิ่มอุปกรณ์</button>
+      <!-- <div style="float: right;" class="col-5"> -->
+        <label style="margin-right: 5px;margin-left:5%;">ค้นหาอุปกรณ์: </label>
+        <input type="text" [(ngModel)]="searchTerm" class="searchTerm border border-dark text-center rounded" placeholder="กรอกคำที่ต้องการค้นหา">
+      <!-- </div> -->
+    <hr>
+    <div class="contianer" style="margin-top: 20px;">
+      <a style="font-size: 20px;">รายการอุปกรณ์</a>
+      <table class="table" style="margin-top: 10px;">
+        <thead>
+          <tr>
+            <th scope="row">ชื่ออุปกรณ์</th>
+            <th scope="row">คณะ/หน่วยงาน</th>
+            <th scope="row">ตึก/อาคาร</th>
+            <th scope="row">แก้ไข</th>
+            <th scope="row">ลบ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ac of ACList | listFilter: searchTerm; index as i">
+            <td>
+              {{ ac.apName }}
+              <br>
+              <small class="text-muted">SN: {{ ac.access_serail }}</small>
+              <br>
+              <small class="text-muted">Mac Address: {{ ac.access_mac }}</small>
+            </td>
+            <td>{{ ac.fac_name}}</td>
+            <td>{{ ac.building_name }}</td>
+            <td>
+              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editDevice"
+                data-bs-whatever="@fat" (click)="editAC(ac.access_id)">แก้ไข</button>
+            </td>
+            <td>
+              <button type="button" class="btn btn-danger" (click)="delAC(ac.access_id)">ลบ</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal fade" id="addDevice" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">เพิ่มอุปกรณ์</h5>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">X</button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-1">
+              <label for="access-name" class="col-form-label">ชื่ออุปกรณ์:</label>
+              <input type="text" class="form-control" [(ngModel)]="device.access_name"
+                [ngModelOptions]="{standalone: true}">
+            </div>
+            <div class="mb-1">
+              <label for="sec-name" class="col-form-label">ชื่อย่ออุปกรณ์:</label>
+              <input type="text" class="form-control" [(ngModel)]="device.short_name"
+                [ngModelOptions]="{standalone: true}">
+            </div>
+            <div class="mb-1">
+              <label for="mac" class="col-form-label">Mac Address:</label>
+              <input type="text" class="form-control" [(ngModel)]="device.access_mac"
+                [ngModelOptions]="{standalone: true}">
+            </div>
+            <div class="mb-1">
+              <label for="serial" class="col-form-label">Serial:</label>
+              <input type="text" class="form-control" [(ngModel)]="device.access_serial"
+                [ngModelOptions]="{standalone: true}">
+            </div>
+            <div class="mb-1">
+              <label for="type">ประเภท:</label>
+              <div class="input-group">
+                <select class="form-select" name="type_id" [(ngModel)]="device.access_type_id">
+                  <option *ngFor="let act of ACTList" value="{{ act.access_type_id }}">{{ act.access_type_name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="univ">วิทยาเขต:</label>
+              <div class="input-group">
+                <select class="form-select" name="u_select" (ngModelChange)="getFac($event)"
+                  [(ngModel)]="device.univ_id">
+                  <option *ngFor="let act of UNIVList" value="{{ act.univ_id }}">{{ act.univ_name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="fac">คณะ/หน่วยงาน:</label>
+              <div class="input-group">
+                <select class="form-select" name="f_select" (ngModelChange)="getBuilding($event)"
+                  [(ngModel)]="device.fac_id">
+                  <option *ngFor="let act of FACList" value="{{ act.fac_id }}">{{ act.fac_name }}</option>
+                </select>
+              </div>
+              <div *ngIf="device.fac_id==100" class="mb-1">
+                <label for="add_fac" class="col-form-label">ระบุคณะหรือหน่วยงาน:</label>
+                <input type="text" class="form-control">
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="building">ตึก/อาคาร:</label>
+              <div class="input-group">
+                <select class="form-select" name="b_select" [(ngModel)]="device.building_id">
+                  <option *ngFor="let b_select of BUILDList" value="{{ b_select.building_id }}">{{
+                    b_select.building_name }}</option>
+                </select>
+              </div>
+              <div *ngIf="device.building_id==100" class="mb-1">
+                <label for="add_build" class="col-form-label">ระบุตึกหรืออาคาร:</label>
+                <input type="text" class="form-control">
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="floor">ชั้น:</label>
+              <div class="input-group">
+                <input class="form-control" autocomplete="off" [(ngModel)]="device.floor"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="room">ห้อง:</label>
+              <div class="input-group">
+                <input class="form-control" autocomplete="off" [(ngModel)]="device.access_room"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="brand">ยี่ห้อ:</label>
+              <div class="input-group">
+                <input class="form-control" autocomplete="off" [(ngModel)]="device.access_brand"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="model">รุ่น:</label>
+              <div class="input-group">
+                <input class="form-control" autocomplete="off" [(ngModel)]="device.access_gen"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="year">ปีงบประมาณ(ที่จัดซื้อ):</label>
+              <div class="input-group">
+                <select class="form-select" name="budget" [(ngModel)]="device.access_budget">
+                  <option value="-">ไม่ระบุ</option>
+                  <option value="2560">2560</option>
+                  <option value="2561">2561</option>
+                  <option value="2562">2562</option>
+                  <option value="2563">2563</option>
+                  <option value="2564">2564</option>
+                  <option value="2565">2565</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="no_year">ครั้งที่(ภายในปีงบประมาณ):</label>
+              <div class="input-group">
+                <input class="form-control" autocomplete="off" [(ngModel)]="device.access_budgetno"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="serial">งบที่ใช้(สำนัก,คณะ):</label>
+              <div class="input-group">
+                <select class="form-select" name="budgetuse" [(ngModel)]="device.access_budgetuse">
+                  <option value="-">ไม่ระบุ</option>
+                  <option value="1">สำนักฯ</option>
+                  <option value="2">คณะหรือหน่วยงาน</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="no">ตัวที่:</label>
+              <div class="input-group">
+                <input class="form-control" autocomplete="off" [(ngModel)]="device.access_no"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="addAC()" data-bs-dismiss="modal" aria-label="Close"
+            class="btn btn-success">เพิ่มอุปกรณ์</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editDevice" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">แก้ไขอุปกรณ์</h5>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">X</button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-1">
+              <label for="access-name" class="col-form-label">ชื่ออุปกรณ์:</label>
+              <input type="text" class="form-control" value="upAC.access_name" [(ngModel)]="upAC.access_name"
+                [ngModelOptions]="{standalone: true}">
+            </div>
+            <div class="mb-1">
+              <label for="sec-name" class="col-form-label">ชื่อย่ออุปกรณ์:</label>
+              <input type="text" class="form-control" value="upAC.short_name" [(ngModel)]="upAC.short_name"
+                [ngModelOptions]="{standalone: true}">
+            </div>
+            <div class="mb-1">
+              <label for="mac" class="col-form-label">Mac Address:</label>
+              <input type="text" class="form-control" value="upAC.access_mac" [(ngModel)]="upAC.access_mac"
+                [ngModelOptions]="{standalone: true}">
+            </div>
+            <div class="mb-1">
+              <label for="serial" class="col-form-label">Serial:</label>
+              <input type="text" class="form-control" value="upAC.access_serail" [(ngModel)]="upAC.access_serail"
+                [ngModelOptions]="{standalone: true}">
+            </div>
+            <div class="mb-1">
+              <label for="type">ประเภท:</label>
+              <div class="input-group">
+                <select class="form-select" name="type_id" [(ngModel)]="upAC.access_type_id">
+                  <option *ngFor="let act of ACTList" value="{{ act.access_type_id }}">{{ act.access_type_name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="univ">วิทยาเขต:</label>
+              <div class="input-group">
+                <select class="form-select" name="eu_select" (ngModelChange)="getFac($event)"
+                  [(ngModel)]="upAC.univ_id">
+                  <option *ngFor="let act of UNIVList" value="{{ act.univ_id }}">{{ act.univ_name }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="fac">คณะ/หน่วยงาน:</label>
+              <div class="input-group">
+                <select class="form-select" name="ef_select" (ngModelChange)="getBuilding($event)"
+                  [(ngModel)]="upAC.fac_id">
+                  <option *ngFor="let act of FACList" value="{{ act.fac_id }}">{{ act.fac_name }}</option>
+                </select>
+              </div>
+              <div *ngIf="upAC.fac_id==100" class="mb-1">
+                <label for="uadd_fac" class="col-form-label">ระบุคณะหรือหน่วยงาน:</label>
+                <input type="text" class="form-control">
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="building">ตึก/อาคาร:</label>
+              <div class="input-group">
+                <select class="form-select" name="eb_select" [(ngModel)]="upAC.building_id">
+                  <option *ngFor="let b_select of BUILDList" value="{{ b_select.building_id }}">{{
+                    b_select.building_name }}</option>
+                </select>
+              </div>
+              <div *ngIf="upAC.building_id==100" class="mb-1">
+                <label for="uadd_building" class="col-form-label">ระบุคณะหรือหน่วยงาน:</label>
+                <input type="text" class="form-control">
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="floor">ชั้น:</label>
+              <div class="input-group">
+                <input class="form-control" autocomplete="off" value="upAC.floor" [(ngModel)]="upAC.floor"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="room">ห้อง:</label>
+              <div class="input-group">
+                <input class="form-control" autocomplete="off" value="upAC.access_room" [(ngModel)]="upAC.access_room"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="brand">ยี่ห้อ:</label>
+              <div class="input-group">
+                <input class="form-control" autocomplete="off" value="upAC.access_brand" [(ngModel)]="upAC.access_brand"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="model">รุ่น:</label>
+              <div class="input-group">
+                <input class="form-control" autocomplete="off" value="upAC.access_gen" [(ngModel)]="upAC.access_gen"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="year">ปีงบประมาณ(ที่จัดซื้อ):</label>
+              <div class="input-group">
+                <select class="form-select" name="budget" [(ngModel)]="upAC.access_budget">
+                  <option value="-">ไม่ระบุ</option>
+                  <option value="2560">2560</option>
+                  <option value="2561">2561</option>
+                  <option value="2562">2562</option>
+                  <option value="2563">2563</option>
+                  <option value="2564">2564</option>
+                  <option value="2565">2565</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="no_year">ครั้งที่(ภายในปีงบประมาณ):</label>
+              <div class="input-group">
+                <input class="form-control" autocomplete="off" value="upAC.access_budgetno"
+                  [(ngModel)]="upAC.access_budgetno" [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="serial">งบที่ใช้(สำนัก,คณะ):</label>
+              <div class="input-group">
+                <select class="form-select" name="budgetuse" [(ngModel)]="upAC.access_budgetuse">
+                  <option value="-">ไม่ระบุ</option>
+                  <option value="1">สำนักฯ</option>
+                  <option value="2">คณะหรือหน่วยงาน</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-1">
+              <label for="no">ตัวที่:</label>
+              <div class="input-group">
+                <input class="form-control" autocomplete="off" value="upAC.access_no" [(ngModel)]="upAC.access_no"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="updateAC()" data-bs-dismiss="modal" aria-label="Close"
+            class="btn btn-success">อัพเดทอุปกรณ์</button>
+        </div>
+      </div>
+    </div>
+  </div>

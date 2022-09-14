@@ -1,0 +1,89 @@
+<div class="container-fluid" style="margin-top: 2%">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/main-admin">APs</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/user">ผู้ใช้งาน</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/settings">ตั้งค่า</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" routerLink="/building">ข้อมูลตึก / อาคาร</a>
+    </li>
+  </ul>
+  <div class="row g-3 align-items-center" style="margin-top: 1%">
+    <div class="col-auto">
+      <label for="inputPassword6" class="col-form-label">ชื่อตึก / อาคาร :</label>
+    </div>
+
+    <div class="col-auto">
+      <input class="form-control form-control-sm" type="text" placeholder="" [(ngModel)]="NewBuilding.building_name">
+    </div>
+
+    <div class="col-auto">
+      <label for="fac" class="col-form-label">คณะ / หน่วยงาน :</label>
+    </div>
+
+    <div class="col-auto">
+      <select class="form-select form-select-sm" [(ngModel)]="NewBuilding.fac_id">
+        <option selected></option>
+        <option *ngFor="let fac of FacList" value="{{ fac.fac_id }}">
+          {{ fac.fac_name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="col-auto">
+      <label for="univ" class="col-form-label">วิทยาเขต :</label>
+    </div>
+
+    <div class="col-auto">
+      <select class="form-select form-select-sm">
+        <option selected></option>
+        <option *ngFor="let univ of UNIVList" value="{{ univ.univ_id }}">
+          {{ univ.univ_name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="col-auto">
+      <button type="button" class="btn btn-primary btn-sm" (click)="addBuilding()">
+        บันทึก
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">ที่</th>
+            <th scope="col">ตึก / อาคาร</th>
+            <th scope="col">คณะ</th>
+            <th scope="col">เครื่องมือ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let b of BuildingList; let i = index">
+            <th scope="row">{{ i + 1 }}</th>
+            <td>{{ b.building_name }}</td>
+            <td>{{ b.fac_name }}</td>
+            <td>
+              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                data-bs-whatever="@fat">
+                แก้ไข
+              </button>
+              <button class="btn btn-danger" id="delUser">
+                ลบ
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!--./container-fluid-->

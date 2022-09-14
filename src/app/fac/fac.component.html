@@ -1,0 +1,155 @@
+<div class="container-fluid" style="margin-top: 2%">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/main-admin">APs</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/user">ผู้ใช้งาน</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/settings">ตั้งค่า</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" routerLink="/fac">ข้อมูลคณะ / หน่วยงาน</a>
+        </li>
+      </ul>
+      <div class="row g-3 align-items-center" style="margin-top: 1%">
+        <div class="col-auto">
+          <label for="inputPassword6" class="col-form-label">ชื่อคณะ / หน่วยงาน : </label>
+        </div>
+        
+        <div class="col-auto">
+          <input
+            class="form-control form-control-sm"
+            type="text"
+            placeholder=""
+            [(ngModel)]="fac.fac_name"
+          />
+        </div>
+        
+        <div class="col-auto">
+          <label for="inputPassword6" class="col-form-label">วิทยาเขต : </label>
+        </div>
+        <div class="col-auto">
+          <select class="form-select form-select-sm" [(ngModel)]="fac.univ_id">
+            <option selected></option>
+            <option *ngFor="let univ of UNIVList" value="{{ univ.univ_id }}">
+              {{ univ.univ_name }}
+            </option>
+          </select>
+        </div>
+        <div class="col-auto">
+          <button type="button" class="btn btn-primary btn-sm" (click)="addFac()">
+            บันทึก
+          </button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">ที่</th>
+                <th scope="col">คณะ / หน่วยงาน</th>
+                <th scope="col">วิทยาเขต</th>
+                <th scope="col">เครื่องมือ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let fac of FacList; let i = index">
+                <th scope="row">{{ i + 1 }}</th>
+                <td>{{ fac.fac_name }}</td>
+                <td>{{ fac.univ_name }}</td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-warning"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    data-bs-whatever="@fat"
+                    (click)="sendFac(fac)"
+                  >
+                    แก้ไข
+                  </button>
+                  <button
+                    class="btn btn-danger"
+                    id="delUser"
+                    (click)="deleteFac(fac.fac_id)"
+                  >
+                    ลบ
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+</div><!--./container-fluid-->
+
+<div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">แก้ไข</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3 row">
+            <label for="staticEmail" class="col-sm-4 col-form-label"
+              >ชื่อคณะ / หน่วยงาน
+            </label>
+            <div class="col-sm-8">
+              <input
+                type="text"
+                class="form-control"
+                id="staticEmail" 
+                [(ngModel)]="updateFac.fac_name"
+                value="{{ updateFac.fac_name }}"
+              />
+            </div>
+          </div>
+          
+          <div class="mb-3 row">
+            <label for="" class="col-sm-4 col-form-label">วิทยาเขต</label>
+            <div class="col-sm-8">
+              <select
+                class="form-select form-select-sm"
+                [(ngModel)]="updateFac.univ_id"
+              >
+                <option selected></option>
+                <option *ngFor="let univ of UNIVList" value="{{ univ.univ_id }}">
+                  {{ univ.univ_name }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            ปิด
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="editFac(updateFac)" 
+            data-bs-dismiss="modal"
+          >
+            บันทึก
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

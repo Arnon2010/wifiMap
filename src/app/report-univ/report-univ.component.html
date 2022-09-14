@@ -1,0 +1,118 @@
+<div class="container-fluid" style="margin-top: 2%">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/report">รายงาน</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" routerLink="/report-univ">ภาพรวมตามวิยาเขต</a>
+          </li>
+    </ul>
+    <div class="row g-3 align-items-center" style="margin-top: 1%">
+
+          <div class="row">
+            <!--แสดงรายงานที่เลือก-->
+            <div class="col-sm-8">
+                <div class="card">
+                  
+                    <div class="card-header">
+                        รายงานภาพรวมตามวิทยาเขต
+                    </div>
+                    <div class="card-body" id="box-shadow-table">
+                      <h5 class="card-title">เลือกดูรายงาน</h5>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label text-dark">
+                              <div class="col-auto">
+                                <select class="form-select form-select-sm" [(ngModel)]="univ_id" (change)="getFacList(univ_id); getDataTableUniv(univ_id,fac_id);">
+                                  <option selected value="0">--เลือกวิทยาเขต--</option>
+                                  <option *ngFor="let univ of UnivList;" value="{{ univ.univ_id }}">
+                                    {{ univ.univ_name }}
+                                  </option>
+                                </select>
+                              </div>                            
+                            </label>
+
+                            <label class="col-md-4 col-form-label text-dark">
+                              <select class="form-select form-select-sm" [(ngModel)]="fac_id" (change)="getDataTableUniv(univ_id, fac_id)">
+                                <option selected value="0">--เลือกคณะหรือหน่วยงาน--</option>
+                                <option *ngFor="let fac of FacList;" value="{{ fac.fac_id }}">
+                                  {{ fac.fac_name }}
+                                </option>
+                              </select>                            
+                            </label>
+
+                            <label class="col-md-4 col-form-label text-dark">
+                                <button type="submit" class="btn btn-warning mb-2">ออกรายงาน</button>              
+                            </label>
+                        </div>
+
+                      <hr>
+                      <table class="table">
+                        <thead class="thead-light">
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">ตึก/อาคาร</th>
+                            <th scope="col">จำนวนจุดบริการ</th>
+                            <th scope="col">ใช้งานได้</th>
+                            <th scope="col">ใช้งานไม่ได้</th>
+                            <th scope="col">หมายเหตุ</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let data of dataTableUniv; let i = index">
+                            <th scope="row">{{i + 1}}</th>
+                            <th scope="row">{{data.building_name}}</th>
+                            <td>{{data.deviceCount}}</td>
+                            <td>{{data.upCount}}</td>
+                            <td>{{data.downCount}}</td>
+                            <td></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+            </div>
+
+            <div class="col-sm-4" *ngFor="let item of totalDataUniv">
+              <div class="card mb-3" style="max-width: 540px;" id="box-shadow-info">
+                  <div class="row no-gutters">
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h3 class="card-title"><strong>จุดบริการเครือข่าย</strong></h3>
+                        <div class="box" id="box-shadow-info-2">
+                          {{item.total_device}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+
+              <div class="card mb-3" style="max-width: 540px;" id="box-shadow-info">
+                  <div class="row no-gutters">
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h3 class="card-title"><strong>ใช้งานได้</strong></h3>
+                        <div class="box" id="box-shadow-info-2">
+                          {{item.total_up}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+
+              <div class="card mb-3" style="max-width: 540px;" id="box-shadow-info">
+                  <div class="row no-gutters">
+                    <div class="col-md-8">
+                      <div class="card-body">
+                          <h3 class="card-title"><strong>ใช้งานไม่ได้</strong></h3>
+                          <div class="box" id="box-shadow-info-2">
+                            {{item.total_down}}
+                          </div>
+                        </div>
+                  </div>
+              </div>
+          </div> 
+        </div>
+          <!--./row-->
+    </div>
+
+</div><!--./container-fluid-->

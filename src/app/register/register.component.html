@@ -1,0 +1,62 @@
+<div class="container">
+  <div class="row">
+    <div class="col"></div>
+    <div class="col">
+      <div class="card" style="margin-top: 50%">
+        <div class="card-body">
+          <div>
+            <h2 class="text-center">สมัครสมาชิก</h2>
+            <div class="jumbotron">
+              <form
+                [formGroup]="angForm"
+                (ngSubmit)="postdata(angForm)"
+                autocomplete="off"
+              >
+                <div class="form-group">
+                  <label for="name">ชื่อ</label>
+                  <input
+                    type="text"
+                    name="name"
+                    formControlName="name"
+                    autocomplete="off"
+                    class="form-control input-sm"
+                    placeholder="ชื่อ"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="email">อีเมล</label>
+                  <input
+                    type="email"
+                    name="email"
+                    formControlName="email"
+                    autocomplete="off"
+                    class="form-control input-sm"
+                    placeholder="อีเมล"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="Password">รหัสผ่าน</label>
+                  <input
+                    type="password"
+                    name="Password"
+                    formControlName="password"
+                    autocomplete="off"
+                    class="form-control input-sm"
+                    placeholder="รหัสผ่าน"
+                  />
+                </div>
+                <br />
+                <div class="d-grid gap-2">
+                  <button type="submit" class="btn btn-primary">
+                    สมัครสมาชิก
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col"></div>
+  </div>
+</div>

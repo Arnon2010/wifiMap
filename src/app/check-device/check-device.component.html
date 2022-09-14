@@ -1,0 +1,289 @@
+<div class="container-fluid" style="margin-top: 2%">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/main-admin">APs</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/user">ผู้ใช้งาน</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/settings">ตั้งค่า</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" routerLink="/check-device">ตรวจเช็คอุปกรณ์</a>
+    </li>
+  </ul>
+  <div class="row g-3 align-items-center" style="margin-top: 1%">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+            <form>
+              <div class="mb-3 row">
+                <label class="col-xs-3 col-sm-auto col-form-label"
+                  >Full text search:</label
+                >
+                <div class="col-xs-3 col-sm-auto">
+                  <input
+                    name="searchTerm"
+                    [(ngModel)]="searchTerm"
+                    class="form-control"
+                    type="text"
+                  />
+                </div>
+              </div>
+            </form>
+
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">ชื่ออุปกรณ์</th>
+                  <th scope="col">คณะ/หน่วยงาน</th>
+                  <th scope="col">ตึก/อาคาร</th>
+                  <th scope="col">UP</th>
+                  <th scope="col">DOWN</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let item of devices | listFilter: searchTerm;
+                    index as i
+                  "
+                >
+                  <td>
+                    <div class="row">
+                      <b>{{ item.apName }}</b>
+                    </div>
+                    <div class="row">
+                      <figcaption class="blockquote-footer">
+                        MAC: {{ item.apMac }}
+                      </figcaption>
+                    </div>
+                  </td>
+                  <td>
+                    <p>{{ item.fac_name }}</p>
+                  </td>
+                  <td>
+                    <div class="row">
+                      <b>{{ item.building_name }}</b>
+                    </div>
+                    <div class="row">
+                      <figcaption class="blockquote-footer">
+                        ชั้น: {{ item.floor }}
+                      </figcaption>
+                    </div>
+                  </td>
+                  <td *ngIf="item.status == 'up'">
+                    <button type="button" class="btn btn-success">UP</button>
+                  </td>
+                  <td *ngIf="item.status == 'up'">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#down-device"
+                      (click)="setDownDevice(item.id)"
+                    >
+                      DOWN
+                    </button>
+                  </td>
+                  <td *ngIf="item.status == 'down'">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#up-device"
+                      (click)="setUpDevice(item.id)"
+                    >
+                      UP
+                    </button>
+                  </td>
+                  <td *ngIf="item.status == 'down'">
+                    <button type="button" class="btn btn-danger">DOWN</button>
+                  </td>
+                  <div class="modal fade" id="up-device" tabindex="-1">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">การ UP ของอุปกรณ์</h5>
+                          <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="mb-3 row">
+                            <label
+                              for="staticEmail"
+                              class="col-sm-4 col-form-label"
+                              >วัน / เดือน / ปี
+                            </label>
+                            <div class="col-sm-6">
+                              <input
+                                class="form-control"
+                                placeholder="yyyy-mm-dd"
+                                [(ngModel)]="upDate"
+                                ngbDatepicker
+                                #u="ngbDatepicker"
+                              />
+                            </div>
+                            <div class="col-sm-1">
+                              <button
+                                class="btn btn-outline-secondary calendar"
+                                (click)="u.toggle()"
+                                type="button"
+                              >
+                                เลือก
+                              </button>
+                            </div>
+                          </div>
+                          <div class="mb-3 row">
+                            <label
+                              for="staticEmail"
+                              class="col-sm-4 col-form-label"
+                              >เวลา
+                            </label>
+                            <div class="col">
+                              <ngb-timepicker
+                                [(ngModel)]="upTime"
+                                [spinners]="spinners"
+                              ></ngb-timepicker>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="modal-footer">
+                          <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                          >
+                            ปิด
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-bs-dismiss="modal"
+                            (click)="addUpDevice()"
+                          >
+                            บันทึก
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Down modal -->
+                  <div class="modal fade" id="down-device" tabindex="-1">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">การ DOWN ของอุปกรณ์</h5>
+                          <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="mb-3 row">
+                            <label
+                              for="staticEmail"
+                              class="col-sm-4 col-form-label"
+                              >วัน / เดือน / ปี
+                            </label>
+                            <div class="col-sm-6">
+                              <input
+                                class="form-control"
+                                placeholder="yyyy-mm-dd"
+                                [(ngModel)]="downDate"
+                                ngbDatepicker
+                                #d="ngbDatepicker"
+                              />
+                            </div>
+                            <div class="col-sm-1">
+                              <button
+                                class="btn btn-outline-secondary calendar"
+                                (click)="d.toggle()"
+                                type="button"
+                              >
+                                เลือก
+                              </button>
+                            </div>
+                          </div>
+                          <div class="mb-3 row">
+                            <label
+                              for="staticEmail"
+                              class="col-sm-4 col-form-label"
+                              >เวลา
+                            </label>
+                            <div class="col">
+                              <ngb-timepicker
+                                [(ngModel)]="downTime"
+                                [spinners]="spinners"
+                              ></ngb-timepicker>
+                            </div>
+                          </div>
+                          <div class="mb-3 row">
+                            <label
+                              for="staticEmail"
+                              class="col-sm-4 col-form-label"
+                              >สาเหตุ
+                            </label>
+                            <div class="col-sm-8">
+                              <input
+                                type="text"
+                                class="form-control"
+                                [(ngModel)]="DownDevice.updown_cause"
+                              />
+                            </div>
+                          </div>
+                          <div class="mb-3 row">
+                            <label
+                              for="staticEmail"
+                              class="col-sm-4 col-form-label"
+                              >แนวทางแก้ไข
+                            </label>
+                            <div class="col-sm-8">
+                              <input
+                                type="text"
+                                class="form-control"
+                                [(ngModel)]="DownDevice.updown_solutions"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="modal-footer">
+                          <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                          >
+                            ปิด
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-bs-dismiss="modal"
+                            (click)="addDownDevice()"
+                          >
+                            บันทึก
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

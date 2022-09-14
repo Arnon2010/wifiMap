@@ -1,0 +1,196 @@
+<div class="container-fluid" style="margin-top: 5%">
+  <div class="row g-3 align-items-center">
+    <div class="col-auto">
+      <label for="inputPassword6" class="col-form-label">สิทธิ์ : </label>
+    </div>
+    <div class="col-auto">
+      <select class="form-select form-select-sm" [(ngModel)]="user.role">
+        <option selected></option>
+        <option value="user">user</option>
+        <option value="admin">admin</option>
+        <option value="superAdmin">superAdmin</option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <input
+        class="form-control form-control-sm"
+        type="text"
+        placeholder="ชื่อผู้ใช้งาน"
+        [(ngModel)]="user.name"
+      />
+    </div>
+    <div class="col-auto">
+      <input
+        class="form-control form-control-sm"
+        type="password"
+        placeholder="รหัสผ่าน"
+        [(ngModel)]="user.passwd"
+      />
+    </div>
+    <div class="col-auto">
+      <label for="inputPassword6" class="col-form-label">สัญญาณ : </label>
+    </div>
+    <div class="col-auto">
+      <select class="form-select form-select-sm" [(ngModel)]="user.ssidId">
+        <option selected></option>
+        <option *ngFor="let ssid of SSIDList" value="{{ ssid.id }}">
+          {{ ssid.ssidName }}
+        </option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <label for="inputPassword6" class="col-form-label">พื้นที่ : </label>
+    </div>
+    <div class="col-auto">
+      <select class="form-select form-select-sm" [(ngModel)]="user.univ_id">
+        <option selected></option>
+        <option *ngFor="let univ of UNIVList" value="{{ univ.univ_id }}">
+          {{ univ.univ_name }}
+        </option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <button type="button" class="btn btn-primary btn-sm" (click)="addUser()">
+        บันทึก
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">ที่</th>
+            <th scope="col">ชื่อผู้ใช้งาน</th>
+            <th scope="col">สิทธิ์</th>
+            <th scope="col">ชื่อสัญญาณ</th>
+            <th scope="col">พื้นที่ดูแล</th>
+            <th scope="col">เครื่องมือ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of UserList; let i = index">
+            <th scope="row">{{ i + 1 }}</th>
+            <td>{{ user.username }}</td>
+            <td>{{ user.role }}</td>
+            <td>{{ user.ssidName }}</td>
+            <td>{{ user.univ_name }}</td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-warning"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+                data-bs-whatever="@fat"
+                (click)="sendUser(user)"
+              >
+                แก้ไข
+              </button>
+              <button
+                class="btn btn-danger"
+                id="delUser"
+                (click)="deleteUser(user.username)"
+              >
+                ลบ
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">แก้ไข</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3 row">
+          <label for="staticEmail" class="col-sm-4 col-form-label"
+            >ชื่อผู้ใช้งาน
+          </label>
+          <div class="col-sm-8">
+            <input
+              type="text"
+              readonly
+              class="form-control-plaintext"
+              id="staticEmail"
+              value="{{ updateUser.username }}"
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="inputPassword" class="col-sm-4 col-form-label"
+            >สิทธิ์</label
+          >
+          <div class="col-sm-8">
+            <select
+              class="form-select form-select-sm"
+              [(ngModel)]="updateUser.role"
+            >
+              <option selected></option>
+              <option value="user">user</option>
+              <option value="admin">admin</option>
+              <option value="superAdmin">superAdmin</option>
+            </select>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="" class="col-sm-4 col-form-label">ชื่อสัญญาณ</label>
+          <div class="col-sm-8">
+            <select
+              class="form-select form-select-sm"
+              [(ngModel)]="updateUser.ssidId"
+            >
+              <option selected></option>
+              <option *ngFor="let ssid of SSIDList" value="{{ ssid.id }}">
+                {{ ssid.ssidName }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="" class="col-sm-4 col-form-label">พื้นที่ดูแล</label>
+          <div class="col-sm-8">
+            <select
+              class="form-select form-select-sm"
+              [(ngModel)]="updateUser.univ_local"
+            >
+              <option selected></option>
+              <option *ngFor="let univ of UNIVList" value="{{ univ.univ_id }}">
+                {{ univ.univ_name }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          ปิด
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="editUser(updateUser)"
+        >
+          บันทึก
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

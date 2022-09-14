@@ -1,0 +1,30 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-3 col-lg-4"></div>
+    <div class="col-sm-12 col-md-6 col-lg-4">
+      <div class="card" style="margin-top: 50%">
+        <div class="card-body">
+          <h2 class="text-center">Map-Wifi</h2>
+          <form [formGroup]="angForm" (ngSubmit)="postdata(angForm)" autocomplete="off">
+            <div class="form-group">
+              <label for="email">อีเมล</label>
+              <input type="email" name="email" formControlName="email" autocomplete="off" class="form-control input-sm"
+                placeholder="อีเมล" />
+            </div>
+            <div class="form-group">
+              <label for="Password">รหัสผ่าน</label>
+              <input type="password" name="Password" formControlName="password" autocomplete="off"
+                class="form-control input-sm" placeholder="รหัสผ่าน" />
+            </div>
+            <br />
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">เข้าสู่ระบบ</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="jumbotron"></div>
+    </div>
+    <div class="col-sm col-md-3 col-lg-4"></div>
+  </div>
+</div>

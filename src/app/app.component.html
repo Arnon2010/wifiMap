@@ -1,0 +1,32 @@
+<div class="navbar navbar-expand-lg navbar-dark bg-dark" *ngIf="logoutbtn">
+  <div class="container-fluid">
+    <a class="navbar-brand">Srivijaya WiFi : Map</a>
+    <div class="contianer"></div>
+    <ul class="nav justify-content-center">
+      <li class="nav-item">
+          <a class="nav-link text-white" routerLink="/main-admin">จัดการระบบ</a>
+      </li>
+      <li class="nav-item">
+        <button
+          class="nav-link bg-dark open-button"
+          routerLink="/changepass"
+          style="color: white; border: none"
+        >
+          เปลี่ยนรหัสผ่าน
+        </button>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" routerLink="/report">รายงาน</a>
+      </li>
+      <!-- <li class="nav-item">
+        <a class="nav-link text-white" href="#">Username</a>
+      </li> -->
+      <li class="nav-item">
+        <a class="nav-link text-white" href="#" (click)="logout()"
+          >ออกจากระบบ</a
+        >
+      </li>
+    </ul>
+  </div>
+</div>
+<router-outlet></router-outlet>
