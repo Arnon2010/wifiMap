@@ -1,7 +1,10 @@
+import { map } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AP, BuildingDetail } from './model';
+import { environment } from '../../environments/environment';
+import { Loader } from '@googlemaps/js-api-loader';
 
 @Injectable({
   providedIn: 'root',
@@ -12,9 +15,12 @@ import { AP, BuildingDetail } from './model';
   styleUrls: ['./main-admin.component.css'],
 })
 export class MainAdminComponent implements OnInit {
-  baseUrl: string = 'http://127.0.0.1/ruts-map-wifi/php';
+  baseUrl: string = environment.baseUrl;
   APList: AP[] = [];
   selectAP: any;
+
+  title = "google-maps"
+  private map: google.maps.Map | undefined
 
   buildingDetail: BuildingDetail = {
     access_name: '',
@@ -27,6 +33,28 @@ export class MainAdminComponent implements OnInit {
   constructor(private httpClient: HttpClient) {}
 
   ngOnInit(): void {
+
+    // load the google map on the browser
+
+    let loader = new Loader({
+      apiKey: ''
+    });
+
+    loader.load().then(() => {
+      console.log("loaded map")
+      const location = {
+        lat: 25.2744,
+        lng: 133.7751,
+      }
+
+      const portalDiv = document.getElementById('map')!;
+
+      this.map = new google.maps.Map(portalDiv,{
+        center: location,
+        zoom: 6
+      })
+    })
+
     this.httpClient
       .get<AP[]>(this.baseUrl + '/getAP.php')
       .subscribe((response) => {

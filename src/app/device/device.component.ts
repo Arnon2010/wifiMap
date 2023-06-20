@@ -13,8 +13,6 @@ import {environment} from '../../environments/environment';
 })
 export class DeviceComponent implements OnInit {
   
-  //baseUrl: string = 'http://127.0.0.1/ruts-wifi/php';
-
   searchTerm: string = '';
 
   ACTList: ACT[] = [];
@@ -164,6 +162,7 @@ export class DeviceComponent implements OnInit {
         this.FACList = response;
       });
   }
+  
   getBuilding(fac_id: any) {
     this.httpClient
       .post<any>(environment.baseUrl + '/device/getBuilding.php', { fac_id }, {
